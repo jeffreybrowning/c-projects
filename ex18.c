@@ -14,13 +14,15 @@ void die(const char *message)
 		printf("ERROR: %s\n", message);
 	}
 
+	// exit(1) means exit true, which exits the program
 	exit(1);
 }
 
 // --- Typedefs ---
 
 // a typedef creates a fake type, in this
-// case for a function pointer
+// case for a function pointer with a specific call pattern which we can use as a 
+// type for future sorting fuctions
 typedef int (*compare_cb)(int a, int b);
 
 
@@ -41,11 +43,18 @@ int *bubble_sort(int *numbers, int count, compare_cb cmp)
 
 	memcpy(target, numbers, count * sizeof(int));
 
+	// effectively a while loop that lasts long enough to check all the items in array
 	for(i = 0; i < count; i++) {
+		// for every item
 		for(j = 0; j < count - 1; j++) {
+			// if the our compare fuction returns a positive number
 			if(cmp(target[j], target[j+1]) > 0) {
+				// save the object on the right temporarily
 				temp = target[j+1];
+				// move the object on the right one to the left 
 				target[j+1] = target[j];
+				/* move the object on the left to the right, effectively switching the 
+				   values */
 				target[j] = temp;
 			}
 		}
@@ -106,7 +115,11 @@ int main(int argc, char *argv[])
 	for(i = 0; i < count; i++) {
 		numbers[i] = atoi(inputs[i]);
 	}
-	
+
+	/* test sorting takes as third argument a variable of type compare_cb. Since we 
+     * defined with a typedef earlier our compare_cb type to take the (int a, int b) 
+	 * arg pattern, we can pass a pointer to any function that has that same pattern 
+     * like any of our ...order functions */
 	test_sorting(numbers, count, sorted_order);
 	test_sorting(numbers, count, reverse_order);
 	test_sorting(numbers, count, strange_order);
